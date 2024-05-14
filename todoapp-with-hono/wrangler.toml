@@ -1,0 +1,21 @@
+name = "todoapp-with-hono"
+compatibility_date = "2023-12-01"
+
+# [vars]
+# MY_VAR = "my-variable"
+
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hono-drizzle"
+database_id = "e1858232-44cd-4649-8424-35e3b6a21404"
+
+# [ai]
+# binding = "AI"

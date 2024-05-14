@@ -1,0 +1,8 @@
+1. npx create hono todoapp
+2. npm i drizzle, drizzle-kit
+3. npx wrangler d1 create todo-db
+4. npx wrangler d1 migrations create todo-db 
+5. schema.ts create 
+6. npx drizzle-kit generate
+7. npx wrangler d1 migrations apply todo-db --local
+7. npx wrangler d1 migrations apply todo-db --remote
