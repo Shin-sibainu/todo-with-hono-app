@@ -1,8 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
 
 const TodoApp = () => {
+  const queryClient = useQueryClient();
+
   const {
     isLoading,
     error,
@@ -18,6 +20,40 @@ const TodoApp = () => {
     },
   });
 
+  //削除用
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`http://localhost:8787/todos/${id}`, { method: "DELETE" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
+  const handleDelete = (id: number) => {
+    deleteMutation.mutate(id);
+  };
+
+  // 編集用
+  const editMutation = useMutation({
+    mutationFn: async ({ id, title }: { id: number; title: string }) => {
+      await fetch(`http://localhost:8787/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
+  const handleEdit = (id: number, title: string) => {
+    editMutation.mutate({ id, title });
+  };
+
   if (isLoading) return "Loading...";
 
   if (error) {
@@ -31,7 +67,7 @@ const TodoApp = () => {
           Todo App
         </h1>
         <TodoInput />
-        <TodoList todos={todos} />
+        <TodoList todos={todos} onDelete={handleDelete} onEdit={handleEdit} />
       </div>
     </main>
   );
