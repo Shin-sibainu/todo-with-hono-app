@@ -4,7 +4,7 @@ import Todo from "./Todo";
 interface TodoListProps {
   todos: TodoType[];
   onDelete: (id: number) => void;
-  onEdit: (id: number, title: string) => void;
+  onEdit: (id: number, title: string, status: boolean) => void;
 }
 
 const TodoList = ({ todos, onDelete, onEdit }: TodoListProps) => {

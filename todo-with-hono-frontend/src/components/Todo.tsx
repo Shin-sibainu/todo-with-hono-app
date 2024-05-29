@@ -4,12 +4,15 @@ import { TodoType } from "../App";
 interface TodoProps {
   todo: TodoType;
   onDelete: (id: number) => void;
-  onEdit: (id: number, title: string) => void;
+  onEdit: (id: number, title: string, status: boolean) => void;
 }
 
 const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
   const [inputText, setInputText] = useState<string>(todo.title);
   const [isEditing, setIsEditing] = useState(false);
+  const [isCompleted, setIsCompleted] = useState<boolean>(
+    todo.status === "done"
+  );
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -19,9 +22,13 @@ const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
     if (inputText.trim() === "") {
       return;
     }
-    onEdit(todo.id!, inputText);
-
+    onEdit(todo.id!, inputText, isCompleted);
     setIsEditing(false);
+  };
+
+  const toggleCompletion = () => {
+    setIsCompleted(!isCompleted);
+    onEdit(todo.id!, todo.title, !isCompleted);
   };
 
   return (
@@ -30,6 +37,8 @@ const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
         <input
           className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:checked:bg-blue-500 dark:checked:border-blue-500"
           type="checkbox"
+          checked={isCompleted}
+          onChange={toggleCompletion}
         />
         {isEditing ? (
           <input
@@ -39,7 +48,13 @@ const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
             className="px-2 focus:outline-none"
           />
         ) : (
-          <span className="text-gray-800 dark:text-gray-200">{todo.title}</span>
+          <span
+            className={`text-gray-800 dark:text-gray-200 ${
+              isCompleted ? "line-through" : ""
+            }`}
+          >
+            {todo.title}
+          </span>
         )}
       </div>
       <div className="flex space-x-2">

@@ -36,13 +36,22 @@ const TodoApp = () => {
 
   // 編集用
   const editMutation = useMutation({
-    mutationFn: async ({ id, title }: { id: number; title: string }) => {
+    mutationFn: async ({
+      id,
+      title,
+      isCompleted,
+    }: {
+      id: number;
+      title: string;
+      isCompleted: boolean;
+    }) => {
+      const status = isCompleted ? "done" : "todo";
       await fetch(`http://localhost:8787/todos/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title, status }),
       });
     },
     onSuccess: () => {
@@ -50,8 +59,8 @@ const TodoApp = () => {
     },
   });
 
-  const handleEdit = (id: number, title: string) => {
-    editMutation.mutate({ id, title });
+  const handleEdit = (id: number, title: string, isCompleted: boolean) => {
+    editMutation.mutate({ id, title, isCompleted });
   };
 
   if (isLoading) return "Loading...";
