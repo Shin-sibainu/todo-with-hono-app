@@ -1,63 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
+import useFetchTodos from "../hooks/useFetchTodos";
+import useDeleteTodo from "../hooks/useDeleteTodo";
+import useEditTodo from "../hooks/useEditTodo";
 
 const TodoApp = () => {
-  const queryClient = useQueryClient();
-
-  const {
-    isLoading,
-    error,
-    data: todos,
-  } = useQuery({
-    queryKey: ["todos"],
-    queryFn: async () => {
-      const response = await fetch("http://localhost:8787/todos");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    },
-  });
-
-  //削除用
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await fetch(`http://localhost:8787/todos/${id}`, { method: "DELETE" });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const { data: todos, error, isLoading } = useFetchTodos();
+  const deleteMutation = useDeleteTodo();
+  const editMutation = useEditTodo();
 
   const handleDelete = (id: number) => {
     deleteMutation.mutate(id);
   };
-
-  // 編集用
-  const editMutation = useMutation({
-    mutationFn: async ({
-      id,
-      title,
-      isCompleted,
-    }: {
-      id: number;
-      title: string;
-      isCompleted: boolean;
-    }) => {
-      const status = isCompleted ? "done" : "todo";
-      await fetch(`http://localhost:8787/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title, status }),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
 
   const handleEdit = (id: number, title: string, isCompleted: boolean) => {
     editMutation.mutate({ id, title, isCompleted });

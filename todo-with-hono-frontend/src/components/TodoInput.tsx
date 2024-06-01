@@ -1,26 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TodoType } from "../App";
 import { useState } from "react";
+import { useAddTodo } from "../hooks/useAddTodo";
 
 const TodoInput = () => {
   const [inputText, setInputText] = useState<string>("");
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: (newTodo: TodoType) => {
-      return fetch("http://localhost:8787/todos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTodo),
-      });
-    },
-    onSuccess: () => {
-      setInputText("");
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const mutation = useAddTodo();
 
   return (
     <div className="flex items-center mb-4">
