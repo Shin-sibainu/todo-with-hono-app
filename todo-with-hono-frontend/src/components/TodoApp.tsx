@@ -17,10 +17,10 @@ const TodoApp = () => {
     editMutation.mutate({ id, title, isCompleted });
   };
 
-  if (isLoading) return "Loading...";
+  if (isLoading) return <div>Loading...</div>;
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>{error.message}</div>;
   }
 
   return (

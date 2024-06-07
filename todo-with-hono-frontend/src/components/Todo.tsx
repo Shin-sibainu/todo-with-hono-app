@@ -64,6 +64,7 @@ const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
           <button
             className="text-blue-500 hover:text-blue-600"
             onClick={handleEdit}
+            aria-label="編集"
           >
             <svg
               className="h-5 w-5"
@@ -79,6 +80,7 @@ const Todo = ({ todo, onDelete, onEdit }: TodoProps) => {
         <button
           onClick={() => onDelete(todo.id!)}
           className="text-red-500 hover:text-red-600"
+          aria-label="削除"
         >
           <svg
             className="h-5 w-5"

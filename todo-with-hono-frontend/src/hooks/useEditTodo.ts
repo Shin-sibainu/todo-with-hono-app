@@ -14,12 +14,15 @@ const useEditTodo = () => {
       title: string;
       isCompleted: boolean;
     }) => {
+      // booleanのisCompletedをstatusの文字列に変換
+      const status = isCompleted ? "done" : "todo";
+
       const response = await fetch(`http://localhost:8787/todos/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id, title, isCompleted }),
+        body: JSON.stringify({ id, title, status }),
       });
       if (!response.ok) {
         throw new Error("Failed to edit todo");
