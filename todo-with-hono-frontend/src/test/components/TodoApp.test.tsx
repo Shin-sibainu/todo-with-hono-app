@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../../App";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // //https://zenn.dev/seratch/articles/b0c1eca61b60e5
 // //https://www.geekfeed.co.jp/geekblog/react-vitest
@@ -39,17 +40,22 @@ describe(App, () => {
   });
 
   test("新しいTodoを追加する", async () => {
-    render(<App />);
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    );
+    // render(<App />);
     const input = screen.getByPlaceholderText("Add a new task");
     await userEvent.type(input, "新しいタスク");
 
     const addButton = screen.getByRole("button", { name: "Add" });
     await userEvent.click(addButton);
 
-    screen.debug();
-
     // // findByTextを使って、非同期処理の完了を待つ
     const addedTodo = await screen.findByText("新しいタスク");
+
     expect(addedTodo).toBeInTheDocument();
   });
 });
