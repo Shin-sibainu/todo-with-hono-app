@@ -13,9 +13,19 @@ export const useAddTodo = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newTodo),
-      });
+      }).then((res) => res.json()); // レスポンスボディをJSONとして解析
     },
-    onSuccess: () => {
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["todos"] });
+    // },
+    onSuccess: (data) => {
+      // レスポンスデータを使用してToDoリストを更新
+      queryClient.setQueryData(
+        ["todos"],
+        (oldTodos: TodoType[] | undefined) => {
+          return [...(oldTodos || []), data]; // 確認: `data` が正しいオブジェクト形式であること
+        }
+      );
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });

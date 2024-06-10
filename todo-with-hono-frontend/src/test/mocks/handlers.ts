@@ -25,4 +25,14 @@ export const handlers = [
       { status: 200 }
     );
   }),
+
+  http.post("http://localhost:8787/todos", async (req) => {
+    const newTodo = await req.request.json();
+    const responseTodo = { id: Date.now(), ...newTodo }; // 一意のIDを付与
+
+    console.log("Mock POST Request:", newTodo);
+    console.log("Mock POST Response:", responseTodo);
+
+    return HttpResponse.json(responseTodo, { status: 201 });
+  }),
 ];
