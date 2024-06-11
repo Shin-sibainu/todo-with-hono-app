@@ -1,8 +1,7 @@
+import { useDeleteTodo, useEditTodo } from "../hooks/mutation";
+import { useFetchTodos } from "../hooks/query";
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
-import useFetchTodos from "../hooks/useFetchTodos";
-import useDeleteTodo from "../hooks/useDeleteTodo";
-import useEditTodo from "../hooks/useEditTodo";
 
 const TodoApp = () => {
   const { data: todos, error, isLoading } = useFetchTodos();
