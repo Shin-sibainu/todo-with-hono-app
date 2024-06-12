@@ -3,18 +3,30 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../../App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import TodoApp from "../../components/TodoApp";
 
 // //https://zenn.dev/seratch/articles/b0c1eca61b60e5
 // //https://www.geekfeed.co.jp/geekblog/react-vitest
 
-describe(App, () => {
+// QueryClientを作成
+const queryClient = new QueryClient();
+
+// コンポーネントをQueryClientProviderで囲むヘルパー関数
+const renderWithClient = (component: React.ReactNode) => {
+  return render(
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>
+  );
+};
+
+describe(TodoApp, () => {
   test("データフェッチ中のローディング状態が出力される", async () => {
-    render(<App />);
+    renderWithClient(<TodoApp />);
     expect(screen.getByText(/Loading/i)).toBeInTheDocument();
   });
 
   test("Todoアプリが表示されている", async () => {
-    render(<App />);
+    renderWithClient(<TodoApp />);
+
     expect(await screen.findByText(/Todo App/i)).toBeInTheDocument();
     expect(await screen.findByText(/Add/i)).toBeInTheDocument();
 
@@ -34,19 +46,15 @@ describe(App, () => {
   });
 
   test("Todo一覧が表示されている。", async () => {
-    render(<App />);
+    renderWithClient(<TodoApp />);
+
     expect(screen.getByText("Test Todo")).toBeInTheDocument();
     expect(screen.getByText("散歩")).toBeInTheDocument();
   });
 
   test("新しいTodoを追加する", async () => {
-    const queryClient = new QueryClient();
-    render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    );
-    // render(<App />);
+    renderWithClient(<TodoApp />);
+
     const input = screen.getByPlaceholderText("Add a new task");
     await userEvent.type(input, "新しいタスク");
 
