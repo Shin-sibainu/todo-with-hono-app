@@ -85,4 +85,30 @@ describe(TodoApp, () => {
       expect(screen.queryByText("削除するタスク")).not.toBeInTheDocument();
     });
   });
+
+  test("Todoアイテムを編集する", async () => {
+    renderWithClient(<TodoApp />);
+
+    // 新しいTodoを追加
+    const input = screen.getByPlaceholderText("Add a new task");
+    await userEvent.type(input, "編集前のタスク");
+    const addButton = screen.getByRole("button", { name: "Add" });
+    await userEvent.click(addButton);
+
+    // 編集ボタンをクリック
+    const editButtons = await screen.findAllByRole("button", { name: "編集" });
+    await userEvent.click(editButtons[editButtons.length - 1]); // 最新のTodoの編集ボタンを選択
+
+    // 編集フィールドに新しいテキストを入力
+    const editInput = screen.getByDisplayValue("編集前のタスク");
+    await userEvent.clear(editInput);
+    await userEvent.type(editInput, "編集後のタスク");
+
+    // 保存ボタンをクリック
+    const saveButton = screen.getByText("保存");
+    await userEvent.click(saveButton);
+
+    // 編集が反映されたか確認
+    expect(await screen.findByText("編集後のタスク")).toBeInTheDocument();
+  });
 });
