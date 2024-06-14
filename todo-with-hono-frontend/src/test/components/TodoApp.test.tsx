@@ -1,12 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import App from "../../App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TodoApp from "../../components/TodoApp";
-
-// //https://zenn.dev/seratch/articles/b0c1eca61b60e5
-// //https://www.geekfeed.co.jp/geekblog/react-vitest
 
 // QueryClientを作成
 const queryClient = new QueryClient();
@@ -65,5 +61,28 @@ describe(TodoApp, () => {
     const addedTodo = await screen.findByText("新しいタスク");
 
     expect(addedTodo).toBeInTheDocument();
+  });
+
+  test("Todoアイテムを削除する", async () => {
+    renderWithClient(<TodoApp />);
+
+    // 新しいTodoを追加
+    const input = screen.getByPlaceholderText("Add a new task");
+    await userEvent.type(input, "削除するタスク");
+    const addButton = screen.getByRole("button", { name: "Add" });
+    await userEvent.click(addButton);
+
+    // 追加されたTodoを確認
+    expect(await screen.findByText("削除するタスク")).toBeInTheDocument();
+
+    // screen.debug();
+    // 全ての削除ボタンを取得し、最初のTodoの削除ボタンをクリックする
+    const deleteButtons = screen.getAllByRole("button", { name: "削除" });
+    await userEvent.click(deleteButtons[3]);
+
+    // 削除されたTodoが画面から消えることを確認
+    await waitFor(() => {
+      expect(screen.queryByText("削除するタスク")).not.toBeInTheDocument();
+    });
   });
 });
