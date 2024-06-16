@@ -1,9 +1,17 @@
 import { http, HttpResponse } from "msw";
+import { beforeEach } from "vitest";
+import { Todo } from "../../types/types";
 
-let todos = [
-  { id: 1, title: "Test Todo", status: "todo" },
-  { id: 2, title: "散歩", status: "done" },
-];
+// todos をグローバルに定義
+let todos: Todo[];
+
+beforeEach(() => {
+  // 各テストの開始前に todos 配列を初期状態にリセット
+  todos = [
+    { id: 1, title: "Test Todo", status: "todo" },
+    { id: 2, title: "散歩", status: "done" },
+  ];
+});
 
 export const handlers = [
   http.get("http://localhost:8787/todos", async () => {
