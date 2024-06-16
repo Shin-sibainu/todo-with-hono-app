@@ -109,7 +109,9 @@ describe(TodoApp, () => {
     const saveButton = await screen.findByRole("button", { name: "保存" });
     await userEvent.click(saveButton);
 
+    screen.debug();
+
     // // 編集が反映されたか確認
-    // expect(await screen.findByText("編集後のタスク")).toBeInTheDocument();
+    expect(await screen.findByText("編集後のタスク")).toBeInTheDocument();
   });
 });

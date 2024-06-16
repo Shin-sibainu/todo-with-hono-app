@@ -40,4 +40,19 @@ export const handlers = [
     todos.push(newTodoWithId); // テスト用のデータ配列に追加
     return HttpResponse.json(newTodoWithId, { status: 201 });
   }),
+
+  // Adding PUT request handler
+  http.put("http://localhost:8787/todos/:id", async (req) => {
+    const { id } = req.params;
+    const updateInfo = (await req.request.json()) as Partial<Todo>;
+    const todoIndex = todos.findIndex((todo) => todo.id === Number(id));
+    if (todoIndex === -1) {
+      return HttpResponse.json({ error: "Todo not found" }, { status: 404 });
+    }
+
+    // Update the todo
+    const updatedTodo = { ...todos[todoIndex], ...updateInfo };
+    todos[todoIndex] = updatedTodo;
+    return HttpResponse.json(updatedTodo, { status: 200 });
+  }),
 ];

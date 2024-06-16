@@ -38,7 +38,7 @@ describe(useDeleteTodo, () => {
     await waitFor(() => {
       // expect(result.current.error?.message).toEqual("Todo not found");
       // expect(result.current.isError).toBe(true);
-      // expect(result.current.error).toBeDefined();
+      expect(result.current.error).toBeDefined();
       // expect(result.current.error?.message).toEqual("Todo not found");
     });
   });
