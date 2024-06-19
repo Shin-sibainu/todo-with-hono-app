@@ -14,7 +14,15 @@ beforeEach(() => {
 });
 
 export const handlers = [
-  http.get("http://localhost:8787/todos", async () => {
+  http.get("http://localhost:8787/todos", async (req) => {
+    const url = new URL(req.request.url);
+
+    const error = url.searchParams.get("error");
+
+    if (error) {
+      return HttpResponse.json(null, { status: 500 });
+    }
+
     return HttpResponse.json(todos, { status: 200 });
   }),
 
@@ -41,7 +49,6 @@ export const handlers = [
     return HttpResponse.json(newTodoWithId, { status: 201 });
   }),
 
-  // Adding PUT request handler
   http.put("http://localhost:8787/todos/:id", async (req) => {
     const { id } = req.params;
     const updateInfo = (await req.request.json()) as Partial<Todo>;
